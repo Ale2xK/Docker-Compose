@@ -1,0 +1,35 @@
+services:
+
+  php:
+    build: ./docker/php-apache
+    networks:
+      - study-app
+    ports:
+      - 5879:80
+    volumes:
+      - ./app:/var/www/html
+#      - ./vhost.conf:/etc/apache2/sites-available/000-default.conf
+    environment:
+      - XDEBUG_CONFIG=idekey=VSCODE
+      - PHP_IDE_CONFIG=serverName=localhost
+
+
+  mysql:
+    build: ./docker/mysql
+    networks:
+      - study-app
+    restart: always
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - ./docker/mysql/mysql-data:/var/lib/mysql
+      - ./docker/mysql/dumps:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      MYSQL_ROOT_PASSWORD: app
+
+networks:
+  study-app:
+    driver: bridge
